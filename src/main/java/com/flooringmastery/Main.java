@@ -8,7 +8,7 @@ import com.flooringmastery.service.FlooringMasteryService;
 import com.flooringmastery.view.FlooringMasteryView;
 import com.flooringmastery.view.UserIoConsoleImpl;
 
-public class App {
+public class Main {
     public static void main(String[] args) {
         FlooringMasteryController controller = new FlooringMasteryController(
             new FlooringMasteryView(
