@@ -6,7 +6,7 @@ import java.util.Objects;
 public class Product {
     private final String TYPE;
     private final BigDecimal COST_PER_SQ_FT;
-    private final BigDecimal LABOR_COST_PER_SQ_FT;
+    private final BigDecimal LABOUR_COST_PER_SQ_FT;
 
     public Product(
         String type, 
@@ -15,7 +15,7 @@ public class Product {
         
         this.TYPE = type;
         this.COST_PER_SQ_FT = costPerSqFt;
-        this.LABOR_COST_PER_SQ_FT = laborCostPerSqFt;
+        this.LABOUR_COST_PER_SQ_FT = laborCostPerSqFt;
     }
 
     public String getType() {
@@ -27,7 +27,7 @@ public class Product {
     }
 
     public BigDecimal getLaborCostPerSqFt() {
-        return LABOR_COST_PER_SQ_FT;
+        return LABOUR_COST_PER_SQ_FT;
     }
 
     @Override
@@ -56,11 +56,11 @@ public class Product {
         if (!Objects.equals(this.COST_PER_SQ_FT, other.COST_PER_SQ_FT)) {
             return false;
         }
-        return Objects.equals(this.LABOR_COST_PER_SQ_FT, other.LABOR_COST_PER_SQ_FT);
+        return Objects.equals(this.LABOUR_COST_PER_SQ_FT, other.LABOUR_COST_PER_SQ_FT);
     }
 
     @Override
     public String toString() {
-        return "FlooringMasteryProduct{" + "TYPE=" + TYPE + ", COST_PER_SQ_FT=" + COST_PER_SQ_FT + ", LABOR_COST_PER_SQ_FT=" + LABOR_COST_PER_SQ_FT + '}';
+        return "FlooringMasteryProduct{" + "TYPE=" + TYPE + ", COST_PER_SQ_FT=" + COST_PER_SQ_FT + ", LABOR_COST_PER_SQ_FT=" + LABOUR_COST_PER_SQ_FT + '}';
     }
 }
