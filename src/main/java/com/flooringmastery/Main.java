@@ -10,7 +10,7 @@ import com.flooringmastery.view.UserIOConsoleImpl;
 
 public class Main {
     public static void main(String[] args) {
-        FlooringController controller = new FlooringController(
+        FlooringController flooringController = new FlooringController(
             new View(
                 new UserIOConsoleImpl()
             ),
@@ -21,6 +21,6 @@ public class Main {
             )
         );
         
-        controller.run();
+        flooringController.run();
     }
 }

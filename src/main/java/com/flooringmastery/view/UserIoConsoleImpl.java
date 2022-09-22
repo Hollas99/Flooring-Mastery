@@ -6,7 +6,7 @@ public class UserIOConsoleImpl implements UserIO {
     private final Scanner USER_IO = new Scanner(System.in);
     
     @Override
-    public void displayLine(String line) {
+    public void printLine(String line) {
         System.out.println(line);
     }
 

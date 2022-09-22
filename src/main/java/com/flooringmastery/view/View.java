@@ -14,7 +14,7 @@ public class View {
     
     //Display line
     public void displayLine(String line) {
-        this.USER_IO.displayLine(line);
+        this.USER_IO.printLine(line);
     }
     
     //Display information
