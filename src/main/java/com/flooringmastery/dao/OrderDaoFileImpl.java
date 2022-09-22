@@ -21,30 +21,30 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
-import com.flooringmastery.dao.exceptions.FlooringMasteryFailedExportException;
-import com.flooringmastery.dao.exceptions.FlooringMasteryFailedLoadException;
-import com.flooringmastery.dao.exceptions.FlooringMasteryFailedSaveException;
-import com.flooringmastery.model.FlooringMasteryOrder;
-import com.flooringmastery.model.FlooringMasteryProduct;
+import com.flooringmastery.dao.exceptions.FailedExportException;
+import com.flooringmastery.dao.exceptions.FailedLoadException;
+import com.flooringmastery.dao.exceptions.FailedSaveException;
+import com.flooringmastery.model.Order;
+import com.flooringmastery.model.Product;
 
-public class FlooringMasteryOrderDaoFileImpl implements FlooringMasteryOrderDao {
+public class OrderDaoFileImpl implements OrderDao {
     private final String SRC_DIRECTORY;
     private final String EXP_FILE;
     
-    private final Map<LocalDate, Map<Integer, FlooringMasteryOrder>> ORDERS_MAP;
+    private final Map<LocalDate, Map<Integer, Order>> ORDERS_MAP;
     
-    public FlooringMasteryOrderDaoFileImpl() {
+    public OrderDaoFileImpl() {
         this("Orders", "Backup/DataExport.txt");
     }
 
-    public FlooringMasteryOrderDaoFileImpl(String SRC_DIRECTORY, String EXP_FILE) {
+    public OrderDaoFileImpl(String SRC_DIRECTORY, String EXP_FILE) {
         this.SRC_DIRECTORY = SRC_DIRECTORY;
         this.EXP_FILE = EXP_FILE;
         this.ORDERS_MAP = new TreeMap<>();
     }
         
     @Override
-    public void loadFromExternals() throws FlooringMasteryFailedLoadException {
+    public void loadFromExternals() throws FailedLoadException {
         List<String> filenames;
         try {
             Path ordersDirectoryPath = FileSystems.getDefault().getPath(SRC_DIRECTORY);
@@ -53,7 +53,7 @@ public class FlooringMasteryOrderDaoFileImpl implements FlooringMasteryOrderDao 
                 .map(path -> path.getFileName().toString())
                 .collect(Collectors.toList());
         } catch (IOException ex) {
-            throw new FlooringMasteryFailedLoadException("Unable to load orders", ex);
+            throw new FailedLoadException("Unable to load orders", ex);
         }
         
         Scanner reader;
@@ -81,7 +81,7 @@ public class FlooringMasteryOrderDaoFileImpl implements FlooringMasteryOrderDao 
                     )
                 );
             } catch (FileNotFoundException ex) {
-                throw new FlooringMasteryFailedLoadException("Unable to load orders", ex);
+                throw new FailedLoadException("Unable to load orders", ex);
             }
             
             reader.nextLine(); // ignore header
@@ -97,13 +97,13 @@ public class FlooringMasteryOrderDaoFileImpl implements FlooringMasteryOrderDao 
                 BigDecimal costPerSqFt = new BigDecimal(tokens[6]);
                 BigDecimal laborCostPerSqFt = new BigDecimal(tokens[7]);
 
-                FlooringMasteryOrder order = new FlooringMasteryOrder(
+                Order order = new Order(
                     orderDate,
                     orderNum,
                     customerName,
                     state,
                     percentTaxRate,
-                    new FlooringMasteryProduct(
+                    new Product(
                         type,
                         costPerSqFt,
                         laborCostPerSqFt
@@ -120,7 +120,7 @@ public class FlooringMasteryOrderDaoFileImpl implements FlooringMasteryOrderDao 
     }
 
     @Override
-    public void pushOrder(FlooringMasteryOrder order) {
+    public void pushOrder(Order order) {
         if (!ORDERS_MAP.containsKey(order.getOrderDate())) {
             ORDERS_MAP.put(order.getOrderDate(), new TreeMap<>());
         }
@@ -128,8 +128,8 @@ public class FlooringMasteryOrderDaoFileImpl implements FlooringMasteryOrderDao 
     }
 
     @Override
-    public Set<FlooringMasteryOrder> ordersSet() {
-        Set<FlooringMasteryOrder> receivedOrders = new HashSet<>();
+    public Set<Order> ordersSet() {
+        Set<Order> receivedOrders = new HashSet<>();
         ORDERS_MAP.values().forEach(subMap -> {
             receivedOrders.addAll(subMap.values());
         });
@@ -138,13 +138,13 @@ public class FlooringMasteryOrderDaoFileImpl implements FlooringMasteryOrderDao 
     }
 
     @Override
-    public Optional<FlooringMasteryOrder> getOrderByDateAndNumber(LocalDate date, int num) {
-        Optional<FlooringMasteryOrder> receivedInstance;
-        Map<Integer, FlooringMasteryOrder> subMap = ORDERS_MAP.get(date);
+    public Optional<Order> getOrderByDateAndNumber(LocalDate date, int num) {
+        Optional<Order> receivedInstance;
+        Map<Integer, Order> subMap = ORDERS_MAP.get(date);
         if (subMap == null) {
             receivedInstance = Optional.empty();
         } else {        
-            FlooringMasteryOrder order = subMap.get(num);
+            Order order = subMap.get(num);
             if (order == null) {
                 receivedInstance = Optional.empty();
             } else {
@@ -155,13 +155,13 @@ public class FlooringMasteryOrderDaoFileImpl implements FlooringMasteryOrderDao 
     }
 
     @Override
-    public Optional<FlooringMasteryOrder> removeOrderByDateAndNumber(LocalDate date, int num) {
-        Optional<FlooringMasteryOrder> receivedInstance;
-        Map<Integer, FlooringMasteryOrder> subMap = ORDERS_MAP.get(date);
+    public Optional<Order> removeOrderByDateAndNumber(LocalDate date, int num) {
+        Optional<Order> receivedInstance;
+        Map<Integer, Order> subMap = ORDERS_MAP.get(date);
         if (subMap == null) {
             receivedInstance = Optional.empty();
         } else {
-            FlooringMasteryOrder order = subMap.remove(num);
+            Order order = subMap.remove(num);
             if (order == null) {
                 receivedInstance = Optional.empty();
             } else {
@@ -175,8 +175,8 @@ public class FlooringMasteryOrderDaoFileImpl implements FlooringMasteryOrderDao 
     }
 
     @Override
-    public void saveToExternals() throws FlooringMasteryFailedSaveException {
-        for (Entry<LocalDate, Map<Integer, FlooringMasteryOrder>> entry : ORDERS_MAP.entrySet()) {
+    public void saveToExternals() throws FailedSaveException {
+        for (Entry<LocalDate, Map<Integer, Order>> entry : ORDERS_MAP.entrySet()) {
             LocalDate date = entry.getKey();
             String filename = String.format(
                 "Orders_%2d%2d%4d.txt",
@@ -189,7 +189,7 @@ public class FlooringMasteryOrderDaoFileImpl implements FlooringMasteryOrderDao 
             try {
                 writer = new PrintWriter(new FileWriter("Orders/" + filename));
             } catch (IOException ex) {
-                throw new FlooringMasteryFailedSaveException("Unable to save orders", ex);
+                throw new FailedSaveException("Unable to save orders", ex);
             }
             
             writer.println(
@@ -221,13 +221,13 @@ public class FlooringMasteryOrderDaoFileImpl implements FlooringMasteryOrderDao 
     }
 
     @Override
-    public void export() throws FlooringMasteryFailedExportException {
+    public void export() throws FailedExportException {
         PrintWriter writer;
         
         try {
             writer = new PrintWriter(new FileWriter(EXP_FILE));
         } catch (IOException ex) {
-            throw new FlooringMasteryFailedExportException("Unable to export orders");
+            throw new FailedExportException("Unable to export orders");
         }
         
         writer.println(
@@ -236,8 +236,8 @@ public class FlooringMasteryOrderDaoFileImpl implements FlooringMasteryOrderDao 
             + "Tax,Total,OrderDate"
         );
         
-        for (Map<Integer, FlooringMasteryOrder> subMap : ORDERS_MAP.values()) {
-            for (FlooringMasteryOrder order : subMap.values()) {
+        for (Map<Integer, Order> subMap : ORDERS_MAP.values()) {
+            for (Order order : subMap.values()) {
                 String line = String.format(
                     "%d,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s",
                     order.getOrderNum(),

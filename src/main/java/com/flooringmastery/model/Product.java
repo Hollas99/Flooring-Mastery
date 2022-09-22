@@ -3,12 +3,12 @@ package com.flooringmastery.model;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-public class FlooringMasteryProduct {
+public class Product {
     private final String TYPE;
     private final BigDecimal COST_PER_SQ_FT;
     private final BigDecimal LABOR_COST_PER_SQ_FT;
 
-    public FlooringMasteryProduct(
+    public Product(
         String type, 
         BigDecimal costPerSqFt, 
         BigDecimal laborCostPerSqFt) {
@@ -49,7 +49,7 @@ public class FlooringMasteryProduct {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final FlooringMasteryProduct other = (FlooringMasteryProduct) obj;
+        final Product other = (Product) obj;
         if (!Objects.equals(this.TYPE, other.TYPE)) {
             return false;
         }

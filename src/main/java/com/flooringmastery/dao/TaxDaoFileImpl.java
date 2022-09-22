@@ -9,28 +9,28 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
 
-import com.flooringmastery.dao.exceptions.FlooringMasteryFailedLoadException;
+import com.flooringmastery.dao.exceptions.FailedLoadException;
 
-public class FlooringMasteryTaxDaoFileImpl implements FlooringMasteryTaxDao {
+public class TaxDaoFileImpl implements TaxDao {
     private final String SRC_FILE;
     private final Map<String, BigDecimal> TAX_MAP;
     
-    public FlooringMasteryTaxDaoFileImpl() {
+    public TaxDaoFileImpl() {
         this("Data/Taxes.txt");
     }
     
-    public FlooringMasteryTaxDaoFileImpl(String SRC_FILE) {
+    public TaxDaoFileImpl(String SRC_FILE) {
         this.SRC_FILE = SRC_FILE;
         this.TAX_MAP = new HashMap<>();
     }
     
     @Override
-    public void loadDataFromExternals() throws FlooringMasteryFailedLoadException {
+    public void loadDataFromExternals() throws FailedLoadException {
         Scanner reader;
         try {
             reader = new Scanner(new BufferedReader(new FileReader(SRC_FILE)));
         } catch (FileNotFoundException ex) {
-            throw new FlooringMasteryFailedLoadException(
+            throw new FailedLoadException(
                 "Unable to load tax information",
                 ex
             );

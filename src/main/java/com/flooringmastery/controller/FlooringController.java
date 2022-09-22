@@ -5,19 +5,19 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.Set;
 
-import com.flooringmastery.dao.exceptions.FlooringMasteryFailedLoadException;
-import com.flooringmastery.model.FlooringMasteryOrder;
-import com.flooringmastery.model.FlooringMasteryProduct;
-import com.flooringmastery.service.FlooringMasteryService;
-import com.flooringmastery.view.FlooringMasteryView;
+import com.flooringmastery.dao.exceptions.FailedLoadException;
+import com.flooringmastery.model.Order;
+import com.flooringmastery.model.Product;
+import com.flooringmastery.service.FlooringService;
+import com.flooringmastery.view.View;
 
-public class FlooringMasteryController {
-    private final FlooringMasteryView VIEW;
-    private final FlooringMasteryService SERVICE;
+public class FlooringController {
+    private final View VIEW;
+    private final FlooringService SERVICE;
 
     private final RoundingMode COMMON_ROUNDING_MODE = RoundingMode.CEILING;
     
-    public FlooringMasteryController(FlooringMasteryView VIEW, FlooringMasteryService SERVICE) {
+    public FlooringController(View VIEW, FlooringService SERVICE) {
         this.VIEW = VIEW;
         this.SERVICE = SERVICE;
     }
@@ -26,7 +26,7 @@ public class FlooringMasteryController {
         
         try {
             SERVICE.loadDaos();
-        } catch (FlooringMasteryFailedLoadException ex) {
+        } catch (FailedLoadException ex) {
             VIEW.displayErrorLine(ex.getMessage());
         }
         
@@ -70,7 +70,7 @@ public class FlooringMasteryController {
             val -> true, 
             "The entered input was invalid"
         );
-        Set<FlooringMasteryOrder> orders = SERVICE.getOrdersByDate(filterDate);
+        Set<Order> orders = SERVICE.getOrdersByDate(filterDate);
         if (orders.isEmpty()) {
             VIEW.displayErrorLine("There are no orders with this date");
         } else {
@@ -79,7 +79,7 @@ public class FlooringMasteryController {
         pauseBeforeContinuation();
     }
     
-    private void displayOrder(FlooringMasteryOrder order) {
+    private void displayOrder(Order order) {
         VIEW.displayAroundContents(
             "Order " + order.getOrderNum(),
             "Date: " + order.getOrderDate(),
@@ -138,7 +138,7 @@ public class FlooringMasteryController {
             str -> SERVICE.hasProductWithType(str),
             "That floor type is not available"
         );
-        FlooringMasteryProduct orderedProd = SERVICE.getProductByType(prodType).get();
+        Product orderedProd = SERVICE.getProductByType(prodType).get();
         
         BigDecimal area = VIEW.getBigDecimal(
             "Enter total area (in sq. ft.) demanded for this floor type in this"
@@ -147,7 +147,7 @@ public class FlooringMasteryController {
             "The input must be some area no less than 100 sq. ft."
         );
          
-        FlooringMasteryOrder order = new FlooringMasteryOrder(
+        Order order = new Order(
             orderDate,
             orderNum,
             customerName,

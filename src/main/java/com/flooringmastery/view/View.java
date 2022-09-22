@@ -5,10 +5,10 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.function.Predicate;
 
-public class FlooringMasteryView {
+public class View {
     private final UserIO USER_IO;
 
-    public FlooringMasteryView(UserIO USER_IO) {
+    public View(UserIO USER_IO) {
         this.USER_IO = USER_IO;
     }
     

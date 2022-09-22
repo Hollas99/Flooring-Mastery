@@ -3,12 +3,12 @@ package com.flooringmastery.dao;
 import java.math.BigDecimal;
 import java.util.Optional;
 
-import com.flooringmastery.dao.exceptions.FlooringMasteryFailedLoadException;
+import com.flooringmastery.dao.exceptions.FailedLoadException;
 
-public interface FlooringMasteryTaxDao {
+public interface TaxDao {
 	
 	//Loads tax file
-    public void loadDataFromExternals() throws FlooringMasteryFailedLoadException;
+    public void loadDataFromExternals() throws FailedLoadException;
 
     //Check for tax information
     public boolean hasInfoForStateAbbr(String state);

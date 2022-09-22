@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class FlooringMasteryOrder {
+public class Order {
     private LocalDate orderDate;
     private int orderNum;
     
@@ -13,16 +13,16 @@ public class FlooringMasteryOrder {
     private String state;
     private BigDecimal percentTaxRate;
     
-    private FlooringMasteryProduct orderedProd;
+    private Product orderedProd;
     private BigDecimal area;
 
-    public FlooringMasteryOrder(
+    public Order(
         LocalDate orderDate, 
         int orderNum, 
         String customerName, 
         String state, 
         BigDecimal percentTaxRate, 
-        FlooringMasteryProduct orderedProd, 
+        Product orderedProd, 
         BigDecimal area) {
         
         this.orderDate = orderDate;
@@ -115,7 +115,7 @@ public class FlooringMasteryOrder {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final FlooringMasteryOrder other = (FlooringMasteryOrder) obj;
+        final Order other = (Order) obj;
         if (this.orderNum != other.orderNum) {
             return false;
         }

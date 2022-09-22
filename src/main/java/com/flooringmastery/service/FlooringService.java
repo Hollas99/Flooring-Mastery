@@ -8,47 +8,47 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.flooringmastery.dao.FlooringMasteryOrderDao;
-import com.flooringmastery.dao.FlooringMasteryProductDao;
-import com.flooringmastery.dao.FlooringMasteryTaxDao;
-import com.flooringmastery.dao.exceptions.FlooringMasteryFailedLoadException;
-import com.flooringmastery.model.FlooringMasteryOrder;
-import com.flooringmastery.model.FlooringMasteryProduct;
+import com.flooringmastery.dao.OrderDao;
+import com.flooringmastery.dao.ProductDao;
+import com.flooringmastery.dao.TaxDao;
+import com.flooringmastery.dao.exceptions.FailedLoadException;
+import com.flooringmastery.model.Order;
+import com.flooringmastery.model.Product;
 
-public class FlooringMasteryService {
-    private FlooringMasteryTaxDao taxDao;
-    private FlooringMasteryProductDao prodDao;
-    private FlooringMasteryOrderDao orderDao;
+public class FlooringService {
+    private TaxDao taxDao;
+    private ProductDao prodDao;
+    private OrderDao orderDao;
 
-    public FlooringMasteryService(FlooringMasteryTaxDao taxDao, FlooringMasteryProductDao prodDao, FlooringMasteryOrderDao orderDao) {
+    public FlooringService(TaxDao taxDao, ProductDao prodDao, OrderDao orderDao) {
         this.taxDao = taxDao;
         this.prodDao = prodDao;
         this.orderDao = orderDao;
     }
     
-    public void loadDaos() throws FlooringMasteryFailedLoadException {
+    public void loadDaos() throws FailedLoadException {
         List<String> loadErrs = new LinkedList<>();
         
         try {
             taxDao.loadDataFromExternals();
-        } catch (FlooringMasteryFailedLoadException ex) {
+        } catch (FailedLoadException ex) {
             loadErrs.add(ex.getMessage());
         }
         
         try {
             prodDao.loadDataFromExternals();
-        } catch (FlooringMasteryFailedLoadException ex) {
+        } catch (FailedLoadException ex) {
             loadErrs.add(ex.getMessage());
         }
         
         try {
             orderDao.loadFromExternals();
-        } catch (FlooringMasteryFailedLoadException ex) {
+        } catch (FailedLoadException ex) {
             loadErrs.add(ex.getMessage());
         }
         
         if (!loadErrs.isEmpty()) {
-            throw new FlooringMasteryFailedLoadException(
+            throw new FailedLoadException(
                 loadErrs.stream().collect(Collectors.joining(", "))
             );
         }
@@ -66,7 +66,7 @@ public class FlooringMasteryService {
     }
     
     //Returns set of all products
-    public Set<FlooringMasteryProduct> productsSet() {
+    public Set<Product> productsSet() {
         return prodDao.productsSet();
     }
     
@@ -76,25 +76,25 @@ public class FlooringMasteryService {
     }
 
     //Get product by type
-    public Optional<FlooringMasteryProduct> getProductByType(String type) {
+    public Optional<Product> getProductByType(String type) {
         return prodDao.getProductByType(type);
     }
 
-    public Set<FlooringMasteryOrder> ordersSet() {
+    public Set<Order> ordersSet() {
         return orderDao.ordersSet();
     }
     
     //Returns set of all orders from given date
-    public Set<FlooringMasteryOrder> getOrdersByDate(LocalDate date) {
+    public Set<Order> getOrdersByDate(LocalDate date) {
         return orderDao.ordersSet().stream()
-                .filter((FlooringMasteryOrder order) -> {
+                .filter((Order order) -> {
                     return order.getOrderDate().equals(date);
                 })
                 .collect(Collectors.toSet());
     }
 
     //Pushes order into collection
-    public void pushOrder(FlooringMasteryOrder order) {
+    public void pushOrder(Order order) {
         orderDao.pushOrder(order);
     }
 }

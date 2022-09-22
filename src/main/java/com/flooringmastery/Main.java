@@ -1,23 +1,23 @@
 package com.flooringmastery;
 
-import com.flooringmastery.controller.FlooringMasteryController;
-import com.flooringmastery.dao.FlooringMasteryOrderDaoFileImpl;
-import com.flooringmastery.dao.FlooringMasteryProductDaoFileImpl;
-import com.flooringmastery.dao.FlooringMasteryTaxDaoFileImpl;
-import com.flooringmastery.service.FlooringMasteryService;
-import com.flooringmastery.view.FlooringMasteryView;
-import com.flooringmastery.view.UserIoConsoleImpl;
+import com.flooringmastery.controller.FlooringController;
+import com.flooringmastery.dao.OrderDaoFileImpl;
+import com.flooringmastery.dao.ProductDaoFileImpl;
+import com.flooringmastery.dao.TaxDaoFileImpl;
+import com.flooringmastery.service.FlooringService;
+import com.flooringmastery.view.View;
+import com.flooringmastery.view.UserIOConsoleImpl;
 
 public class Main {
     public static void main(String[] args) {
-        FlooringMasteryController controller = new FlooringMasteryController(
-            new FlooringMasteryView(
-                new UserIoConsoleImpl()
+        FlooringController controller = new FlooringController(
+            new View(
+                new UserIOConsoleImpl()
             ),
-            new FlooringMasteryService(
-                new FlooringMasteryTaxDaoFileImpl(),
-                new FlooringMasteryProductDaoFileImpl(),
-                new FlooringMasteryOrderDaoFileImpl()
+            new FlooringService(
+                new TaxDaoFileImpl(),
+                new ProductDaoFileImpl(),
+                new OrderDaoFileImpl()
             )
         );
         

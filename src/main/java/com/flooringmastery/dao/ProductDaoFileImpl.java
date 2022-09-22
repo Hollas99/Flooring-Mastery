@@ -10,29 +10,29 @@ import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
 
-import com.flooringmastery.dao.exceptions.FlooringMasteryFailedLoadException;
-import com.flooringmastery.model.FlooringMasteryProduct;
+import com.flooringmastery.dao.exceptions.FailedLoadException;
+import com.flooringmastery.model.Product;
 
-public class FlooringMasteryProductDaoFileImpl implements FlooringMasteryProductDao {
+public class ProductDaoFileImpl implements ProductDao {
     private final String SRC_FILE;
-    private final Map<String, FlooringMasteryProduct> PRODUCTS_MAP;
+    private final Map<String, Product> PRODUCTS_MAP;
     
-    public FlooringMasteryProductDaoFileImpl() {
+    public ProductDaoFileImpl() {
         this("Data/Products.txt");
     }
     
-    public FlooringMasteryProductDaoFileImpl(String SRC_FILE) {
+    public ProductDaoFileImpl(String SRC_FILE) {
         this.SRC_FILE = SRC_FILE;
         PRODUCTS_MAP = new HashMap<>();
     }
     
     @Override
-    public void loadDataFromExternals() throws FlooringMasteryFailedLoadException {
+    public void loadDataFromExternals() throws FailedLoadException {
         Scanner reader;
         try {
             reader = new Scanner(new BufferedReader(new FileReader(SRC_FILE)));
         } catch (FileNotFoundException ex) {
-            throw new FlooringMasteryFailedLoadException(
+            throw new FailedLoadException(
                 "Unable to load product information"
             );
         }
@@ -46,7 +46,7 @@ public class FlooringMasteryProductDaoFileImpl implements FlooringMasteryProduct
             
             PRODUCTS_MAP.put(
                 type,
-                new FlooringMasteryProduct(type, costPerSqFt, laborCostPerSqFt)
+                new Product(type, costPerSqFt, laborCostPerSqFt)
             );
         }
         
@@ -54,7 +54,7 @@ public class FlooringMasteryProductDaoFileImpl implements FlooringMasteryProduct
     }
 
     @Override
-    public Set<FlooringMasteryProduct> productsSet() {
+    public Set<Product> productsSet() {
         return Set.copyOf(PRODUCTS_MAP.values());
     }
 
@@ -64,8 +64,8 @@ public class FlooringMasteryProductDaoFileImpl implements FlooringMasteryProduct
     }
 
     @Override
-    public Optional<FlooringMasteryProduct> getProductByType(String type) {
-        FlooringMasteryProduct product = PRODUCTS_MAP.get(type);
+    public Optional<Product> getProductByType(String type) {
+        Product product = PRODUCTS_MAP.get(type);
         if (product == null) {
             return Optional.empty();
         }

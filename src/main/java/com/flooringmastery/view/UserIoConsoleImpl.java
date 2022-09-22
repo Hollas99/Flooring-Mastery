@@ -2,7 +2,7 @@ package com.flooringmastery.view;
 
 import java.util.Scanner;
 
-public class UserIoConsoleImpl implements UserIO {
+public class UserIOConsoleImpl implements UserIO {
     private final Scanner USER_IO = new Scanner(System.in);
     
     @Override
